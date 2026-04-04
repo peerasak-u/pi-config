@@ -1,0 +1,11 @@
+# Ignore credentials
+auth.json
+
+# Ignore session history and logs
+sessions/
+
+# Ignore git-cloned resources (agents, skills, etc. that should be managed via pi)
+git/
+
+# System files
+.DS_Store
