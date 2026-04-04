@@ -44,5 +44,6 @@
       "visual-tester": "google-antigravity/gemini-3.1-pro-low"
     }
   },
-  "powerline": "ascii"
+  "powerline": "ascii",
+  "defaultThinkingLevel": "medium"
 }
