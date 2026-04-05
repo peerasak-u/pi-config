@@ -4,12 +4,9 @@
   "defaultModel": "gemini-3-flash",
   "packages": [
     "git:github.com/HazAT/pi-interactive-subagents",
-    "npm:pi-web-access",
     "https://github.com/davebcn87/pi-autoresearch",
     "npm:pi-mcp-adapter",
     "git:github.com/pasky/chrome-cdp-skill@v1.0.1",
-    "npm:pi-smart-sessions",
-    "npm:pi-powerline-footer",
     "git:github.com/aliou/pi-guardrails"
   ],
   "agentModelPresets": {
@@ -32,6 +29,16 @@
       "researcher": "google-antigravity/gemini-3-flash",
       "autoresearch": "google-antigravity/gemini-3.1-pro-low",
       "visual-tester": "google-antigravity/gemini-3.1-pro-low"
+    },
+    "ollama": {
+      "planner": "gemma4:26b",
+      "worker": "gemma4:26b",
+      "scout": "gemma4:26b",
+      "reviewer": "gemma4:26b",
+      "spec": "gemma4:26b",
+      "researcher": "gemma4:26b",
+      "autoresearch": "gemma4:26b",
+      "visual-tester": "gemma4:26b"
     },
     "mixed": {
       "planner": "google-antigravity/claude-opus-4-6-thinking",
