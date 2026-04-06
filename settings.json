@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.65.0",
+  "lastChangelogVersion": "0.65.2",
   "defaultProvider": "google-antigravity",
   "defaultModel": "gemini-3-flash",
   "packages": [
@@ -7,7 +7,9 @@
     "https://github.com/davebcn87/pi-autoresearch",
     "npm:pi-mcp-adapter",
     "git:github.com/pasky/chrome-cdp-skill@v1.0.1",
-    "git:github.com/aliou/pi-guardrails"
+    "git:github.com/aliou/pi-guardrails",
+    "npm:pi-web-access",
+    "npm:pi-ask-user"
   ],
   "agentModelPresets": {
     "opencode-go": {

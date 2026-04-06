@@ -10,7 +10,6 @@ export default function (pi: ExtensionAPI) {
     name: "execute_command",
     label: "Execute Command",
     description: `Execute a slash command or send a message as if the user typed it. The message is added to the session history and triggers a new turn. Use this to:
-- Self-invoke /answer after asking multiple questions
 - Run /reload after creating skills
 - Execute any slash command programmatically
 - Send follow-up prompts to yourself
@@ -18,11 +17,11 @@ export default function (pi: ExtensionAPI) {
 The command/message appears in the conversation as a user message.`,
     promptSnippet:
       "Execute a slash command or send a message as if the user typed it. " +
-      "Use to self-invoke /answer after asking questions, run /reload after creating skills, or send follow-up prompts.",
+      "Use to run /reload after creating skills or send follow-up prompts.",
 
     parameters: Type.Object({
       command: Type.String({ 
-        description: "The command or message to execute (e.g., '/answer', '/reload', or any text)" 
+        description: "The command or message to execute (e.g., '/reload', or any text)" 
       }),
       reason: Type.Optional(
         Type.String({ 
@@ -58,14 +57,8 @@ The command/message appears in the conversation as a user message.`,
       const { command } = pendingCommand;
       pendingCommand = null;
       
-      // Special handling for /answer via event bus (needs context)
-      if (command === "/answer") {
-        setTimeout(() => {
-          pi.events.emit("trigger:answer", ctx);
-        }, 100);
-      } 
       // Auto-execute slash commands via sendUserMessage
-      else if (command.startsWith("/")) {
+      if (command.startsWith("/")) {
         setTimeout(() => {
           pi.sendUserMessage(command);
         }, 100);

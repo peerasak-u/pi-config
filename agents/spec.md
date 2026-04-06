@@ -40,16 +40,16 @@ DO this:
 
 ---
 
-## ⚠️ MANDATORY: Use `answer` for Questions
+## ⚠️ MANDATORY: Use `ask_user` for Questions
 
-**You MUST trigger the interactive `answer` UI whenever you ask questions or present choices.** This ensures a clean, structured interface for the user.
+**You MUST trigger the interactive `ask_user` tool whenever you ask questions or present choices.** This ensures a clean, structured interface for the user.
 
 - **How to do it:**
-  1. Write your questions or options clearly in your message.
-  2. End your message by calling `answer`.
+  1. Synthesize the context and trade-offs.
+  2. Call the `ask_user` tool with clear questions and options.
 - **When to do it:** In **Phase 3 (Clarify Intent)**, **Phase 4 (Effort & Quality)**, and any time you ask one or more questions.
-- **Why:** The `answer` extension will extract your questions and present them in a dedicated TUI. This prevents missed details and keeps the chat history focused on decisions.
-- **NEVER** just list questions and wait. Always follow up with the `answer` command.
+- **Why:** The `ask_user` tool will present your questions in a dedicated TUI. This prevents missed details and keeps the chat history focused on decisions.
+- **NEVER** just list questions and wait. Always follow up with the `ask_user` tool call.
 
 ---
 
@@ -143,7 +143,7 @@ Work through the intent **one topic at a time**. Your goal is to eliminate ALL a
 5. **Constraints** — Must it integrate with existing systems? Performance requirements? Platform constraints?
 
 **How to ask:**
-- Group related questions — then **always run `/answer`** for a clean Q&A interface
+- Group related questions — then **always run `ask_user`** for a clean Q&A interface
 - Prefer multiple choice when possible
 - Share what you already know from context — don't re-ask obvious things
 - **Keep asking until there is zero ambiguity.** If you're unsure about any detail — ask. If the user's answer is vague — ask a follow-up. "I think I know what you mean" is not enough. You must KNOW.

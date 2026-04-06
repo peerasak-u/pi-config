@@ -20,39 +20,35 @@ To use this configuration, ensure your `pi` environment is configured to point t
 ### Agents
 
 The `agents/` directory contains various specialized agent personas:
-- **scout**: Exploratory agent for codebase discovery.
-- **researcher**: In-depth analysis and web research.
-- **worker**: Hands-on implementation and debugging.
-- **reviewer**: Automated code review and feedback.
-- **spec**: Drafts technical specifications and plans.
-- **autoresearch**: Autonomous experiment loop for optimization.
+- **scout**: Exploratory agent for codebase discovery and initial context gathering.
+- **researcher**: In-depth analysis, web research, and library investigation.
+- **worker**: Hands-on implementation, debugging, and task execution.
+- **reviewer**: Automated code review, feedback, and adherence to standards.
+- **spec**: Technical specifications and planning; utilizes the `ask_user` tool for interactive decision-making.
+- **planner**: Orchestrates multi-step projects and breaks down complex goals into actionable tasks.
+- **visual-tester**: Specialized in UI/UX testing and visual regressions.
+- **autoresearch**: Autonomous experiment loop for optimization targets.
 
 ### Extensions
 
 New commands and capabilities are defined in the `extensions/` directory:
 - **cmux**: Terminal and browser surface management.
-- **qwen-tool**: Integration with Qwen Code for deep investigations.
-- **todos**: File-based task management.
-- **wakelock**: Prevent system sleep during long-running tasks.
+- **qwen-tool**: Integration with Qwen Code for deep investigations and hands-on experimentation.
+- **todos**: File-based task management and tracking.
+- **wakelock.ts**: Prevents system sleep during long-running tasks.
+- **agent-models**: Management and selection of model presets for different tasks.
+- **execute-command**: Provides programmatic slash commands and self-invokes (now uses `ask_user` for interaction instead of the legacy `/answer`).
 
-### Model Presets
-
-The `settings.json` file contains several model presets for different agent roles:
-- **antigravity**: High-performance Google Gemini and Claude models (default).
-- **opencode-go**: Open-source models (GLM, Minimax, Kimi).
-- **mixed**: A hybrid of the above.
-
-## Packages
+### Packages
 
 The following pi packages are currently installed and managed:
-- `pi-interactive-subagents` (git)
-- `pi-web-access` (npm)
-- `pi-autoresearch` (github)
-- `pi-mcp-adapter` (npm)
-- `chrome-cdp-skill` (git)
-- `pi-smart-sessions` (npm)
-- `pi-powerline-footer` (npm)
-- `pi-guardrails` (git)
+- `pi-interactive-subagents`: Orchestration of multiple agent sessions (`git:github.com/HazAT/pi-interactive-subagents`).
+- `pi-autoresearch`: Autonomous optimization loop (`https://github.com/davebcn87/pi-autoresearch`).
+- `pi-mcp-adapter`: Adapter for Model Context Protocol servers (`npm:pi-mcp-adapter`).
+- `chrome-cdp-skill`: Local Chrome browser interaction via CDP (`git:github.com/pasky/chrome-cdp-skill@v1.0.1`).
+- `pi-guardrails`: Safety and compliance checks (`git:github.com/aliou/pi-guardrails`).
+- `pi-web-access`: High-quality web research and content extraction (`npm:pi-web-access`).
+- `pi-ask-user`: Interactive decision handshake and tool-based user feedback (`npm:pi-ask-user`).
 
 ## License
 
