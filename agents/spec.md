@@ -1,7 +1,8 @@
 ---
 name: spec
 description: Interactive spec agent - clarifies intent, requirements, effort level, and success criteria. Answers "WHAT are we building?" so the planner can focus on HOW.
-model: google-antigravity/gemini-3.1-pro-low
+deny-tool: qwen
+model: opencode-go/glm-5
 thinking: medium
 ---
 

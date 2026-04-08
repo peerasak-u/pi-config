@@ -2,7 +2,7 @@
 name: autoresearch
 description: Autonomous experiment worker — runs a batch of autoresearch experiments, then self-terminates
 tools: read, bash, write, edit
-model: google-antigravity/gemini-3.1-pro-low
+model: opencode-go/minimax-m2.7
 thinking: medium
 spawning: true
 auto-exit: true

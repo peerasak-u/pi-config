@@ -1,15 +1,16 @@
 {
   "lastChangelogVersion": "0.65.2",
-  "defaultProvider": "google-antigravity",
-  "defaultModel": "gemini-3-flash",
+  "defaultProvider": "opencode-go",
+  "defaultModel": "minimax-m2.5",
   "packages": [
-    "git:github.com/HazAT/pi-interactive-subagents",
     "https://github.com/davebcn87/pi-autoresearch",
     "npm:pi-mcp-adapter",
     "git:github.com/pasky/chrome-cdp-skill@v1.0.1",
     "git:github.com/aliou/pi-guardrails",
-    "npm:pi-web-access",
-    "npm:pi-ask-user"
+    "npm:pi-ask-user",
+    "npm:pi-context",
+    "git:github.com/melihmucuk/pi-crew",
+    "npm:@benvargas/pi-exa-mcp"
   ],
   "agentModelPresets": {
     "opencode-go": {
@@ -19,7 +20,7 @@
       "reviewer": "opencode-go/glm-5",
       "spec": "opencode-go/glm-5",
       "researcher": "opencode-go/minimax-m2.5",
-      "autoresearch": "opencode-go/glm-5",
+      "autoresearch": "opencode-go/minimax-m2.7",
       "visual-tester": "opencode-go/kimi-k2.5"
     },
     "antigravity": {
@@ -43,7 +44,7 @@
       "visual-tester": "gemma4:26b"
     },
     "mixed": {
-      "planner": "google-antigravity/claude-opus-4-6-thinking",
+      "planner": "google-antigravity/gemini-3.1-pro-low",
       "worker": "opencode-go/minimax-m2.5",
       "scout": "google-antigravity/gemini-3-flash",
       "reviewer": "opencode-go/glm-5",

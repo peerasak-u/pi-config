@@ -3,7 +3,7 @@ name: worker
 description: Implements tasks from todos - writes code, runs tests, commits with polished messages
 tools: read, bash, write, edit
 deny-tools: qwen
-model: google-antigravity/gemini-3-flash
+model: opencode-go/minimax-m2.5
 thinking: medium
 spawning: false
 auto-exit: true
