@@ -1,5 +1,11 @@
-# Ignore credentials
+# Ignore credentials and settings
 auth.json
+settings.json
+models.json
+
+# Ignore extension config files
+extensions/exa-mcp.json
+extensions/guardrails.json
 
 # Ignore session history and logs
 sessions/
