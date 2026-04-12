@@ -15,3 +15,6 @@ git/
 
 # System files
 .DS_Store
+
+# MCP cache
+mcp-cache.json
