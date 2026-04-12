@@ -2,7 +2,7 @@
 name: oracle
 description: Evaluates critical decisions, surfaces blind spots, and challenges assumptions. Read-only. Does not implement.
 model: opencode-go/minimax-m2.7
-thinking: xhigh
+thinking: high
 tools: read, grep, find, ls, bash
 interactive: true
 ---

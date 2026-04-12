@@ -1,7 +1,7 @@
 {
-  "lastChangelogVersion": "0.65.2",
-  "defaultProvider": "opencode-go",
-  "defaultModel": "minimax-m2.5",
+  "lastChangelogVersion": "0.66.1",
+  "defaultProvider": "fire-pass",
+  "defaultModel": "accounts/fireworks/routers/kimi-k2p5-turbo",
   "packages": [
     "https://github.com/davebcn87/pi-autoresearch",
     "npm:pi-mcp-adapter",
@@ -9,8 +9,8 @@
     "git:github.com/aliou/pi-guardrails",
     "npm:pi-ask-user",
     "npm:pi-context",
-    "git:github.com/melihmucuk/pi-crew",
-    "npm:@benvargas/pi-exa-mcp"
+    "npm:@benvargas/pi-exa-mcp",
+    "npm:@dreki-gg/pi-context7"
   ],
   "agentModelPresets": {
     "opencode-go": {
@@ -55,5 +55,6 @@
     }
   },
   "powerline": "ascii",
-  "defaultThinkingLevel": "medium"
+  "defaultThinkingLevel": "medium",
+  "steeringMode": "all"
 }

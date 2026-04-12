@@ -2,7 +2,7 @@
 name: scout
 description: Investigates codebase and returns structured findings. Read-only. Use before planning or implementing to gather context.
 model: opencode-go/minimax-m2.5
-thinking: minimal
+thinking: low
 tools: read, grep, find, ls, bash
 ---
 
