@@ -8,7 +8,7 @@ This repository contains custom agent definitions, extensions, skills, and setti
 
 - `agents/`: Custom agent profiles that define specialized roles (e.g., `scout`, `researcher`, `worker`, `reviewer`).
 - `extensions/`: Custom pi extensions that add new capabilities and commands to the agent environment.
-- `skills/`: Reusable agent skills that provide specialized instructions for specific tasks (e.g., `github`, `code-reviewer`, `skill-creator`).
+- `skills/`: Reusable agent skills that provide specialized instructions for specific tasks (see below).
 - `settings.json`: Global configuration for the pi coding agent.
 - `sessions/`: (Ignored) Local history of agent sessions and artifacts.
 - `git/`: (Ignored) Externally managed resources and cloned repositories.
@@ -21,34 +21,61 @@ To use this configuration, ensure your `pi` environment is configured to point t
 
 The `agents/` directory contains various specialized agent personas:
 - **scout**: Exploratory agent for codebase discovery and initial context gathering.
-- **researcher**: In-depth analysis, web research, and library investigation.
 - **worker**: Hands-on implementation, debugging, and task execution.
-- **reviewer**: Automated code review, feedback, and adherence to standards.
-- **spec**: Technical specifications and planning; utilizes the `ask_user` tool for interactive decision-making.
+- **code-reviewer**: Automated code review and feedback.
+- **quality-reviewer**: Comprehensive quality and standards review.
 - **planner**: Orchestrates multi-step projects and breaks down complex goals into actionable tasks.
-- **visual-tester**: Specialized in UI/UX testing and visual regressions.
-- **autoresearch**: Autonomous experiment loop for optimization targets.
+- **oracle**: Specialized agent for deep investigation and knowledge synthesis.
 
 ### Extensions
 
 New commands and capabilities are defined in the `extensions/` directory:
 - **cmux**: Terminal and browser surface management.
-- **qwen-tool**: Integration with Qwen Code for deep investigations and hands-on experimentation.
+- **context7**: Context7 documentation lookup and library resolution.
 - **todos**: File-based task management and tracking.
 - **wakelock.ts**: Prevents system sleep during long-running tasks.
 - **agent-models**: Management and selection of model presets for different tasks.
-- **execute-command**: Provides programmatic slash commands and self-invokes (now uses `ask_user` for interaction instead of the legacy `/answer`).
+- **execute-command**: Provides programmatic slash commands and self-invokes.
+- **english-teacher**: Language learning and correction assistant.
+- **exa-mcp.json**: Exa MCP server configuration.
+- **guardrails.json**: Safety and guardrails configuration.
+
+### Skills
+
+Reusable skills for specialized tasks in the `skills/` directory:
+
+**Development & Code Quality:**
+- **add-mcp-server**: Add and configure MCP servers to pi.
+- **code-simplifier**: Refactor code for clarity and maintainability.
+- **commit**: Git commit conventions and helpers.
+- **frontend-design**: Create production-grade frontend interfaces.
+- **iterate-pr**: Iterate on PRs until CI passes.
+- **learn-codebase**: Discover project conventions and security patterns.
+- **task-verify**: Verify completed non-web tasks.
+- **web-verify**: Verify completed web UI tasks using browser automation.
+
+**Project Management:**
+- **cmux**: Terminal and browser surface management.
+- **dokploy**: Deploy and manage applications using Dokploy.
+- **github**: GitHub CLI interactions (issues, PRs, CI runs).
+- **write-todos**: Create clear, actionable todos.
+
+**Agent & Tooling:**
+- **session-reader**: Read and analyze pi agent session files.
+- **skill-creator**: Create new agent skills following the specification.
+- **zsh-config-manager**: Manage zsh configuration (aliases, functions, prompts).
+- **peerasak-presentation-creator**: Create data-driven presentations with React and Recharts.
 
 ### Packages
 
 The following pi packages are currently installed and managed:
-- `pi-interactive-subagents`: Orchestration of multiple agent sessions (`git:github.com/HazAT/pi-interactive-subagents`).
-- `pi-autoresearch`: Autonomous optimization loop (`https://github.com/davebcn87/pi-autoresearch`).
 - `pi-mcp-adapter`: Adapter for Model Context Protocol servers (`npm:pi-mcp-adapter`).
 - `chrome-cdp-skill`: Local Chrome browser interaction via CDP (`git:github.com/pasky/chrome-cdp-skill@v1.0.1`).
 - `pi-guardrails`: Safety and compliance checks (`git:github.com/aliou/pi-guardrails`).
-- `pi-web-access`: High-quality web research and content extraction (`npm:pi-web-access`).
 - `pi-ask-user`: Interactive decision handshake and tool-based user feedback (`npm:pi-ask-user`).
+- `pi-context`: Context management utilities (`npm:pi-context`).
+- `pi-exa-mcp`: Exa MCP server integration (`npm:@benvargas/pi-exa-mcp`).
+- `pi-context7`: Context7 library documentation (`npm:@dreki-gg/pi-context7`).
 
 ## License
 
