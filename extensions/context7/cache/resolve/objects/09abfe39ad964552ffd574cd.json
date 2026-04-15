@@ -1,0 +1,90 @@
+{
+  "kind": "resolve",
+  "cacheKey": "huggingface::local agents llama.cpp pi integration",
+  "objectKey": "09abfe39ad964552ffd574cd",
+  "libraryName": "huggingface",
+  "normalizedLibraryName": "huggingface",
+  "query": "local agents llama.cpp pi integration",
+  "createdAt": "2026-04-14T16:46:06.454Z",
+  "expiresAt": "2026-04-21T16:46:06.454Z",
+  "results": [
+    {
+      "id": "/huggingface/huggingface_hub",
+      "title": "Hugging Face Hub",
+      "description": "The official Python client for the Huggingface Hub.",
+      "branch": "main",
+      "lastUpdateDate": "2026-03-25T16:44:21.083Z",
+      "state": "finalized",
+      "totalTokens": 106354,
+      "totalSnippets": 861,
+      "stars": 2604,
+      "trustScore": 9.6,
+      "benchmarkScore": 80.35,
+      "versions": []
+    },
+    {
+      "id": "/huggingface/transformers",
+      "title": "Transformers",
+      "description": "🤗 Transformers: State-of-the-art Machine Learning for Pytorch, TensorFlow, and JAX.",
+      "branch": "main",
+      "lastUpdateDate": "2026-04-14T15:10:58.504Z",
+      "state": "finalized",
+      "totalTokens": 1184659,
+      "totalSnippets": 5103,
+      "stars": 144262,
+      "trustScore": 9.6,
+      "benchmarkScore": 76.8,
+      "versions": [
+        "v4.51.3",
+        "v5.0.0",
+        "v4.57.3"
+      ]
+    },
+    {
+      "id": "/huggingface/diffusers",
+      "title": "Diffusers",
+      "description": "🤗 Diffusers: State-of-the-art diffusion models for image, video, and audio generation in PyTorch and FLAX.",
+      "branch": "main",
+      "lastUpdateDate": "2026-04-13T17:13:45.518Z",
+      "state": "finalized",
+      "totalTokens": 722127,
+      "totalSnippets": 2656,
+      "stars": 28824,
+      "trustScore": 9.6,
+      "benchmarkScore": 86.37,
+      "versions": []
+    },
+    {
+      "id": "/huggingface/smolagents",
+      "title": "Smolagents",
+      "description": "🤗 smolagents: a barebones library for agents that think in python code.",
+      "branch": "main",
+      "lastUpdateDate": "2026-02-23T00:38:59.433Z",
+      "state": "finalized",
+      "totalTokens": 79406,
+      "totalSnippets": 639,
+      "stars": 17929,
+      "trustScore": 9.6,
+      "benchmarkScore": 82.6,
+      "versions": []
+    },
+    {
+      "id": "/berriai/litellm",
+      "title": "Litellm",
+      "description": "LiteLLM enables calling all LLM APIs using the OpenAI format, supporting providers like Bedrock, Huggingface, VertexAI, and more, with features like consistent output, retry logic, and budget management.",
+      "branch": "main",
+      "lastUpdateDate": "2026-04-08T02:11:17.827Z",
+      "state": "finalized",
+      "totalTokens": 2401082,
+      "totalSnippets": 10099,
+      "stars": 21881,
+      "trustScore": 7.7,
+      "benchmarkScore": 88.2,
+      "versions": [
+        "v1.80.7-nightly",
+        "v1.81.9-stable",
+        "v1.81.13"
+      ]
+    }
+  ]
+}

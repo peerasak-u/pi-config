@@ -1,0 +1,13 @@
+[
+  {
+    "kind": "resolve",
+    "cacheKey": "huggingface::local agents llama.cpp pi integration",
+    "objectKey": "09abfe39ad964552ffd574cd",
+    "libraryName": "huggingface",
+    "normalizedLibraryName": "huggingface",
+    "query": "local agents llama.cpp pi integration",
+    "createdAt": "2026-04-14T16:46:06.454Z",
+    "expiresAt": "2026-04-21T16:46:06.454Z",
+    "resultCount": 5
+  }
+]
