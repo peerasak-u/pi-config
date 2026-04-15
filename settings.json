@@ -1,9 +1,8 @@
 {
-  "lastChangelogVersion": "0.66.1",
+  "lastChangelogVersion": "0.67.2",
   "defaultProvider": "fire-pass",
   "defaultModel": "accounts/fireworks/routers/kimi-k2p5-turbo",
   "packages": [
-    "https://github.com/davebcn87/pi-autoresearch",
     "npm:pi-mcp-adapter",
     "git:github.com/pasky/chrome-cdp-skill@v1.0.1",
     "git:github.com/aliou/pi-guardrails",
@@ -20,7 +19,6 @@
       "reviewer": "opencode-go/glm-5",
       "spec": "opencode-go/glm-5",
       "researcher": "opencode-go/minimax-m2.5",
-      "autoresearch": "opencode-go/minimax-m2.7",
       "visual-tester": "opencode-go/kimi-k2.5"
     },
     "antigravity": {
@@ -30,7 +28,6 @@
       "reviewer": "google-antigravity/gemini-3.1-pro-high",
       "spec": "google-antigravity/gemini-3.1-pro-low",
       "researcher": "google-antigravity/gemini-3-flash",
-      "autoresearch": "google-antigravity/gemini-3.1-pro-low",
       "visual-tester": "google-antigravity/gemini-3.1-pro-low"
     },
     "ollama": {
@@ -40,7 +37,6 @@
       "reviewer": "gemma4:26b",
       "spec": "gemma4:26b",
       "researcher": "gemma4:26b",
-      "autoresearch": "gemma4:26b",
       "visual-tester": "gemma4:26b"
     },
     "mixed": {
@@ -50,11 +46,11 @@
       "reviewer": "opencode-go/glm-5",
       "spec": "opencode-go/glm-5",
       "researcher": "google-antigravity/gemini-3-flash",
-      "autoresearch": "opencode-go/minimax-m2.7",
       "visual-tester": "google-antigravity/gemini-3.1-pro-low"
     }
   },
   "powerline": "ascii",
   "defaultThinkingLevel": "medium",
-  "steeringMode": "all"
+  "steeringMode": "all",
+  "inputInjectEnabled": false
 }
