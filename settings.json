@@ -1,56 +1,17 @@
 {
-  "lastChangelogVersion": "0.67.2",
-  "defaultProvider": "fire-pass",
-  "defaultModel": "accounts/fireworks/routers/kimi-k2p5-turbo",
+  "lastChangelogVersion": "0.70.6",
+  "defaultProvider": "minimax",
+  "defaultModel": "MiniMax-M2.7",
   "packages": [
-    "npm:pi-mcp-adapter",
-    "git:github.com/pasky/chrome-cdp-skill@v1.0.1",
     "git:github.com/aliou/pi-guardrails",
-    "npm:pi-ask-user",
     "npm:pi-context",
     "npm:@benvargas/pi-exa-mcp",
-    "npm:@dreki-gg/pi-context7"
+    "npm:lsp-pi"
   ],
-  "agentModelPresets": {
-    "opencode-go": {
-      "planner": "opencode-go/glm-5",
-      "worker": "opencode-go/minimax-m2.5",
-      "scout": "opencode-go/minimax-m2.5",
-      "reviewer": "opencode-go/glm-5",
-      "spec": "opencode-go/glm-5",
-      "researcher": "opencode-go/minimax-m2.5",
-      "visual-tester": "opencode-go/kimi-k2.5"
-    },
-    "antigravity": {
-      "planner": "google-antigravity/claude-opus-4-6-thinking",
-      "worker": "google-antigravity/gemini-3-flash",
-      "scout": "google-antigravity/gemini-3-flash",
-      "reviewer": "google-antigravity/gemini-3.1-pro-high",
-      "spec": "google-antigravity/gemini-3.1-pro-low",
-      "researcher": "google-antigravity/gemini-3-flash",
-      "visual-tester": "google-antigravity/gemini-3.1-pro-low"
-    },
-    "ollama": {
-      "planner": "gemma4:26b",
-      "worker": "gemma4:26b",
-      "scout": "gemma4:26b",
-      "reviewer": "gemma4:26b",
-      "spec": "gemma4:26b",
-      "researcher": "gemma4:26b",
-      "visual-tester": "gemma4:26b"
-    },
-    "mixed": {
-      "planner": "google-antigravity/gemini-3.1-pro-low",
-      "worker": "opencode-go/minimax-m2.5",
-      "scout": "google-antigravity/gemini-3-flash",
-      "reviewer": "opencode-go/glm-5",
-      "spec": "opencode-go/glm-5",
-      "researcher": "google-antigravity/gemini-3-flash",
-      "visual-tester": "google-antigravity/gemini-3.1-pro-low"
-    }
-  },
-  "powerline": "ascii",
-  "defaultThinkingLevel": "medium",
+  "defaultThinkingLevel": "high",
   "steeringMode": "all",
-  "inputInjectEnabled": false
+  "inputInjectEnabled": false,
+  "lsp": {
+    "hookMode": "edit_write"
+  }
 }
