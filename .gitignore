@@ -1,6 +1,5 @@
 # Ignore credentials and settings
 auth.json
-settings.json
 models.json
 
 # Ignore extension config files
@@ -16,5 +15,5 @@ git/
 # System files
 .DS_Store
 
-# MCP cache
-mcp-cache.json
+# Context7 cache (regenerated data)
+extensions/context7/
