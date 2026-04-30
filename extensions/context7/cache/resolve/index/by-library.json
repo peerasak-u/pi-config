@@ -1,5 +1,11 @@
 {
-  "huggingface": [
-    "09abfe39ad964552ffd574cd"
+  "apple vision framework ios": [
+    "2c094caa69f872ab801d45a5"
+  ],
+  "visionkit ios": [
+    "fb708b37c69c9dc07c91075f"
+  ],
+  "visionkit": [
+    "7f10f18f009e0e8ef297ced0"
   ]
 }

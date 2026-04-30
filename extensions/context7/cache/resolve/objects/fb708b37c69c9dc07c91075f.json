@@ -1,0 +1,26 @@
+{
+  "kind": "resolve",
+  "cacheKey": "visionkit ios::extract structured data from document vndocumentcamerascan text table",
+  "objectKey": "fb708b37c69c9dc07c91075f",
+  "libraryName": "VisionKit iOS",
+  "normalizedLibraryName": "visionkit ios",
+  "query": "extract structured data from document VNDocumentCameraScan text table",
+  "createdAt": "2026-04-17T17:24:17.825Z",
+  "expiresAt": "2026-04-24T17:24:17.825Z",
+  "results": [
+    {
+      "id": "/lhuanyu/midscene-ios",
+      "title": "Midscene iOS",
+      "description": "Midscene iOS is an SDK and playground for iOS automation, enabling AI-powered control and data extraction on iOS devices.",
+      "branch": "main",
+      "lastUpdateDate": "2025-09-22T21:35:53.695Z",
+      "state": "finalized",
+      "totalTokens": 3389,
+      "totalSnippets": 44,
+      "stars": 10,
+      "trustScore": 8.5,
+      "benchmarkScore": 81.1,
+      "versions": []
+    }
+  ]
+}

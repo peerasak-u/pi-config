@@ -1,0 +1,26 @@
+{
+  "kind": "resolve",
+  "cacheKey": "apple vision framework ios::recognizedocumentsrequest documentobservation extract tables text paragraphs",
+  "objectKey": "2c094caa69f872ab801d45a5",
+  "libraryName": "Apple Vision framework iOS",
+  "normalizedLibraryName": "apple vision framework ios",
+  "query": "RecognizeDocumentsRequest DocumentObservation extract tables text paragraphs",
+  "createdAt": "2026-04-17T17:25:02.738Z",
+  "expiresAt": "2026-04-24T17:25:02.738Z",
+  "results": [
+    {
+      "id": "/websites/developer_apple_vision",
+      "title": "Vision",
+      "description": "The Vision framework applies computer vision algorithms and machine learning technologies to perform tasks like object tracking, text recognition, face detection, and pose estimation on images and videos within Apple applications.",
+      "branch": "main",
+      "lastUpdateDate": "2026-04-13T11:52:12.186Z",
+      "state": "finalized",
+      "totalTokens": 723088,
+      "totalSnippets": 7236,
+      "stars": -1,
+      "trustScore": 10,
+      "benchmarkScore": 76.33,
+      "versions": []
+    }
+  ]
+}

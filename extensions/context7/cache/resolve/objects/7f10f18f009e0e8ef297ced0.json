@@ -1,0 +1,40 @@
+{
+  "kind": "resolve",
+  "cacheKey": "visionkit::extract structured data from document",
+  "objectKey": "7f10f18f009e0e8ef297ced0",
+  "libraryName": "visionkit",
+  "normalizedLibraryName": "visionkit",
+  "query": "extract structured data from document",
+  "createdAt": "2026-04-17T17:23:38.632Z",
+  "expiresAt": "2026-04-24T17:23:38.632Z",
+  "results": [
+    {
+      "id": "/dariyd/react-native-document-scanner",
+      "title": "React Native Document Scanner",
+      "description": "A fast, native React Native document scanner that uses Apple VisionKit on iOS and Google ML Kit on Android, featuring automatic document detection, edge/perspective correction, multi-page scanning, and support for React Native's new architecture.",
+      "branch": "main",
+      "lastUpdateDate": "2025-12-06T18:26:58.221Z",
+      "state": "finalized",
+      "totalTokens": 131996,
+      "totalSnippets": 1267,
+      "stars": 8,
+      "trustScore": 5.8,
+      "benchmarkScore": 60.05,
+      "versions": []
+    },
+    {
+      "id": "/shirsh94/flutter_doc_scanner",
+      "title": "Flutter Doc Scanner",
+      "description": "A Flutter plugin for document scanning on Android, iOS, and Web, leveraging ML Kit Document Scanner API and VisionKit for high-quality digitization, accurate detection, and flexible editing.",
+      "branch": "main",
+      "lastUpdateDate": "2025-07-30T13:57:45.256Z",
+      "state": "finalized",
+      "totalTokens": 12642,
+      "totalSnippets": 21,
+      "stars": 48,
+      "trustScore": 7.2,
+      "benchmarkScore": 0,
+      "versions": []
+    }
+  ]
+}

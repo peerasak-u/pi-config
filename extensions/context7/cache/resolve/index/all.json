@@ -1,13 +1,35 @@
 [
   {
     "kind": "resolve",
-    "cacheKey": "huggingface::local agents llama.cpp pi integration",
-    "objectKey": "09abfe39ad964552ffd574cd",
-    "libraryName": "huggingface",
-    "normalizedLibraryName": "huggingface",
-    "query": "local agents llama.cpp pi integration",
-    "createdAt": "2026-04-14T16:46:06.454Z",
-    "expiresAt": "2026-04-21T16:46:06.454Z",
-    "resultCount": 5
+    "cacheKey": "apple vision framework ios::recognizedocumentsrequest documentobservation extract tables text paragraphs",
+    "objectKey": "2c094caa69f872ab801d45a5",
+    "libraryName": "Apple Vision framework iOS",
+    "normalizedLibraryName": "apple vision framework ios",
+    "query": "RecognizeDocumentsRequest DocumentObservation extract tables text paragraphs",
+    "createdAt": "2026-04-17T17:25:02.738Z",
+    "expiresAt": "2026-04-24T17:25:02.738Z",
+    "resultCount": 1
+  },
+  {
+    "kind": "resolve",
+    "cacheKey": "visionkit ios::extract structured data from document vndocumentcamerascan text table",
+    "objectKey": "fb708b37c69c9dc07c91075f",
+    "libraryName": "VisionKit iOS",
+    "normalizedLibraryName": "visionkit ios",
+    "query": "extract structured data from document VNDocumentCameraScan text table",
+    "createdAt": "2026-04-17T17:24:17.825Z",
+    "expiresAt": "2026-04-24T17:24:17.825Z",
+    "resultCount": 1
+  },
+  {
+    "kind": "resolve",
+    "cacheKey": "visionkit::extract structured data from document",
+    "objectKey": "7f10f18f009e0e8ef297ced0",
+    "libraryName": "visionkit",
+    "normalizedLibraryName": "visionkit",
+    "query": "extract structured data from document",
+    "createdAt": "2026-04-17T17:23:38.632Z",
+    "expiresAt": "2026-04-24T17:23:38.632Z",
+    "resultCount": 2
   }
 ]
