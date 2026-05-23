@@ -1,30 +1,17 @@
 {
-  "lastChangelogVersion": "0.70.6",
+  "lastChangelogVersion": "0.75.4",
   "defaultProvider": "minimax",
   "defaultModel": "MiniMax-M2.7",
   "packages": [
     "git:github.com/aliou/pi-guardrails",
     "npm:pi-context",
     "npm:@benvargas/pi-exa-mcp",
-    "npm:lsp-pi",
-    "npm:pi-memory-md"
+    "npm:lsp-pi"
   ],
   "defaultThinkingLevel": "high",
   "steeringMode": "all",
   "inputInjectEnabled": false,
   "lsp": {
     "hookMode": "edit_write"
-  },
-  "pi-memory-md": {
-    "memoryDir": {
-      "repoUrl": "https://github.com/peerasak-u/pi-memory.git",
-      "localPath": "~/.pi/memory-md",
-      "globalMemory": "global"
-    },
-    "delivery": "message-append",
-    "hooks": {
-      "sessionStart": ["pull"],
-      "sessionEnd": ["push"]
-    }
   }
 }
