@@ -13,6 +13,7 @@ import type { TUI } from "@earendil-works/pi-tui";
 import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
 
 const BAR_WIDTH = 12;
+const BRANCH_WIDTH = 32;
 
 export default function (pi: ExtensionAPI) {
 	let activeTui: TUI | undefined;
@@ -44,7 +45,7 @@ export default function (pi: ExtensionAPI) {
 					const folder = truncateToWidth(cwd.split("/").pop() ?? cwd, 20);
 
 					// Git branch (or dash if not in git)
-					const branch = truncateToWidth(footerData.getGitBranch() ?? "—", 12);
+					const branch = truncateToWidth(footerData.getGitBranch() ?? "—", BRANCH_WIDTH);
 
 					// Model + thinking level, e.g. gpt-5.5/high
 					const model = truncateToWidth(ctx.model?.id ?? "no-model", 24);
