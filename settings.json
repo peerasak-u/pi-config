@@ -1,12 +1,15 @@
 {
-  "lastChangelogVersion": "0.75.4",
-  "defaultProvider": "minimax",
-  "defaultModel": "MiniMax-M2.7",
+  "lastChangelogVersion": "0.78.0",
+  "defaultProvider": "xiaomi",
+  "defaultModel": "mimo-v2-pro",
   "packages": [
     "git:github.com/aliou/pi-guardrails",
     "npm:pi-context",
     "npm:@benvargas/pi-exa-mcp",
-    "npm:lsp-pi"
+    "npm:lsp-pi",
+    "npm:pi-agent-browser-native",
+    "npm:pi-subagents",
+    "npm:pi-rtk"
   ],
   "defaultThinkingLevel": "high",
   "steeringMode": "all",

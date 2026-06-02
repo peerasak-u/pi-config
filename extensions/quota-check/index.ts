@@ -35,6 +35,7 @@ type QuotaInfo = {
 	weekly: QuotaWindow;
 	balance?: DeepSeekBalance;
 	error?: string;
+	status?: number;
 };
 
 function parseQuotaArgs(rawArgs: string): ParsedArgs {
@@ -67,6 +68,7 @@ function parseQuotaJson(stdout: string, fallbackProvider: "codex" | "minimax"): 
 			used_percent: Number(data.weekly?.used_percent ?? 0),
 			reset_at: Number(data.weekly?.reset_at ?? 0),
 		},
+		status: Number(data.status ?? 1),
 	};
 }
 
@@ -172,7 +174,16 @@ function quotaResetLine(theme: any, window: QuotaWindow): string {
 function providerLines(theme: any, quota: QuotaInfo): string[] {
 	const bullet = quota.error ? theme.fg("error", "●") : theme.fg("accent", "●");
 	const title = theme.fg("accent", theme.bold(quota.label));
-	const detail = theme.fg("dim", quota.detail);
+
+	// Show active/paused badge for MiniMax
+	let detailLine = quota.detail;
+	if (quota.provider === "minimax" && !quota.error) {
+		const badge = quota.status === 1
+			? theme.fg("success", "active")
+			: theme.fg("warning", "paused");
+		detailLine = `${quota.detail} ${badge}`;
+	}
+	const detail = theme.fg("dim", detailLine);
 
 	if (quota.error) {
 		return [
