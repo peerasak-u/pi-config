@@ -1,7 +1,7 @@
 /**
  * quota-check — Pi command for Tony CLI quota status.
  *
- * Registers /quota-check and displays Codex/MiniMax/DeepSeek quota as a compact,
+ * Registers /quota-check and displays Codex/MiniMax/DeepSeek/MiMo quota as a compact,
  * colorful TUI card instead of raw command-line output.
  */
 
@@ -12,7 +12,7 @@ import { truncateToWidth, visibleWidth, wrapTextWithAnsi } from "@earendil-works
 
 const SCRIPT_PATH = path.join(os.homedir(), ".tony-cli", "tools", "quota-check", "quota-check.sh");
 
-type ProviderFilter = "both" | "codex" | "minimax" | "deepseek" | "help";
+type ProviderFilter = "both" | "codex" | "minimax" | "deepseek" | "mimo" | "help";
 type ParsedArgs = { filter: ProviderFilter } | { error: string };
 
 type QuotaWindow = {
@@ -27,13 +27,22 @@ type DeepSeekBalance = {
 	topped_up: number;
 };
 
+type MimoBalance = {
+	currency: string;
+	total: string;
+	gift: string;
+	cash: string;
+	frozen: string;
+};
+
 type QuotaInfo = {
-	provider: "codex" | "minimax" | "deepseek";
+	provider: "codex" | "minimax" | "deepseek" | "mimo";
 	label: string;
 	detail: string;
 	interval: QuotaWindow;
 	weekly: QuotaWindow;
 	balance?: DeepSeekBalance;
+	mimoBalance?: MimoBalance;
 	error?: string;
 	status?: number;
 };
@@ -44,12 +53,13 @@ function parseQuotaArgs(rawArgs: string): ParsedArgs {
 	if (trimmed === "codex" || trimmed === "--codex") return { filter: "codex" };
 	if (trimmed === "minimax" || trimmed === "--minimax") return { filter: "minimax" };
 	if (trimmed === "deepseek" || trimmed === "--deepseek") return { filter: "deepseek" };
+	if (trimmed === "mimo" || trimmed === "--mimo") return { filter: "mimo" };
 	if (trimmed === "help" || trimmed === "-h" || trimmed === "--help") return { filter: "help" };
 
 	return {
 		error:
 			`Unknown quota-check argument: ${trimmed}\n\n` +
-			"Usage: /quota-check [both|codex|minimax|deepseek|help]",
+			"Usage: /quota-check [both|codex|minimax|deepseek|mimo|help]",
 	};
 }
 
@@ -89,6 +99,24 @@ function parseDeepSeekJson(stdout: string): QuotaInfo {
 	};
 }
 
+function parseMimoJson(stdout: string): QuotaInfo {
+	const data = JSON.parse(stdout) as any;
+	return {
+		provider: "mimo",
+		label: "Xiaomi MiMo",
+		detail: String(data.plan_type ?? "pay-per-use"),
+		interval: { used_percent: 0, reset_at: 0 },
+		weekly: { used_percent: 0, reset_at: 0 },
+		mimoBalance: {
+			currency: String(data.balance?.currency ?? "USD"),
+			total: String(data.balance?.total ?? "0"),
+			gift: String(data.balance?.gift ?? "0"),
+			cash: String(data.balance?.cash ?? "0"),
+			frozen: String(data.balance?.frozen ?? "0"),
+		},
+	};
+}
+
 function buildHelpOutput(stdout: string, stderr: string, code: number | null | undefined): { text: string; isError: boolean } {
 	const parts = [stdout.trimEnd(), stderr.trimEnd()].filter(Boolean);
 	const text = parts.length ? parts.join("\n\n") : "quota-check produced no output.";
@@ -115,7 +143,7 @@ function clampPercent(value: number): number {
 	return Math.max(0, Math.min(100, Math.round(value)));
 }
 
-async function fetchQuota(pi: ExtensionAPI, provider: "codex" | "minimax" | "deepseek"): Promise<QuotaInfo> {
+async function fetchQuota(pi: ExtensionAPI, provider: "codex" | "minimax" | "deepseek" | "mimo"): Promise<QuotaInfo> {
 	const result = await pi.exec(SCRIPT_PATH, [`--${provider}`, "--json"], { timeout: 20_000 });
 	if (typeof result.code === "number" && result.code !== 0) {
 		const message = [result.stdout?.trim(), result.stderr?.trim()].filter(Boolean).join("\n") || `${provider} quota check failed`;
@@ -125,16 +153,19 @@ async function fetchQuota(pi: ExtensionAPI, provider: "codex" | "minimax" | "dee
 		if (provider === "deepseek") {
 			return parseDeepSeekJson(result.stdout ?? "");
 		}
+		if (provider === "mimo") {
+			return parseMimoJson(result.stdout ?? "");
+		}
 		return parseQuotaJson(result.stdout ?? "", provider);
 	} catch (error: any) {
 		return quotaError(provider, `Could not parse ${provider} quota JSON: ${error?.message ?? String(error)}`);
 	}
 }
 
-function quotaError(provider: "codex" | "minimax" | "deepseek", error: string): QuotaInfo {
+function quotaError(provider: "codex" | "minimax" | "deepseek" | "mimo", error: string): QuotaInfo {
 	return {
 		provider,
-		label: provider === "codex" ? "Codex / ChatGPT" : provider === "minimax" ? "MiniMax" : "DeepSeek",
+		label: provider === "codex" ? "Codex / ChatGPT" : provider === "minimax" ? "MiniMax" : provider === "deepseek" ? "DeepSeek" : "Xiaomi MiMo",
 		detail: "unavailable",
 		interval: { used_percent: 0, reset_at: 0 },
 		weekly: { used_percent: 0, reset_at: 0 },
@@ -203,6 +234,18 @@ function providerLines(theme: any, quota: QuotaInfo): string[] {
 		];
 	}
 
+	// MiMo uses balance display like DeepSeek
+	if (quota.mimoBalance) {
+		const bal = quota.mimoBalance;
+		const balanceLabel = theme.fg("muted", padVisible("Balance:", 12));
+		const amount = theme.fg("success", `$${bal.total}`);
+		const currency = theme.fg("dim", ` ${bal.currency}`);
+		return [
+			`${bullet} ${title}  ${detail}`,
+			`  ${balanceLabel} ${amount}${currency}`,
+		];
+	}
+
 	return [
 		`${bullet} ${title}  ${detail}`,
 		`  ${quotaWindowLine(theme, "5h window", quota.interval)}`,
@@ -248,6 +291,7 @@ async function showQuotaCard(ctx: ExtensionCommandContext, quotas: QuotaInfo[]):
 	const plainText = quotas.map((quota) => {
 		if (quota.error) return `${quota.label}: ${quota.error}`;
 		if (quota.balance) return `${quota.label}: $${quota.balance.total} ${quota.balance.currency}`;
+		if (quota.mimoBalance) return `${quota.label}: $${quota.mimoBalance.total} ${quota.mimoBalance.currency}`;
 		return `${quota.label}: ${quota.interval.used_percent}% / ${quota.weekly.used_percent}%`;
 	}).join("\n");
 	if (!ctx.hasUI) {
@@ -300,13 +344,14 @@ function frameLine(borderColor: (s: string) => string, line: string, innerWidth:
 
 export default function quotaCheckExtension(pi: ExtensionAPI) {
 	pi.registerCommand("quota-check", {
-		description: "Show Codex, MiniMax, and DeepSeek quota in a compact dialog",
+		description: "Show Codex, MiniMax, DeepSeek, and MiMo quota in a compact dialog",
 		getArgumentCompletions(prefix) {
 			const items = [
-				{ value: "both", label: "both", description: "Show Codex, MiniMax, and DeepSeek quota" },
+				{ value: "both", label: "both", description: "Show Codex, MiniMax, DeepSeek, and MiMo quota" },
 				{ value: "codex", label: "codex", description: "Show Codex/ChatGPT quota only" },
 				{ value: "minimax", label: "minimax", description: "Show MiniMax quota only" },
 				{ value: "deepseek", label: "deepseek", description: "Show DeepSeek balance only" },
+				{ value: "mimo", label: "mimo", description: "Show Xiaomi MiMo balance only" },
 				{ value: "help", label: "help", description: "Show quota-check CLI help" },
 			];
 			const filtered = items.filter((item) => item.value.startsWith(prefix));
@@ -328,7 +373,7 @@ export default function quotaCheckExtension(pi: ExtensionAPI) {
 				return;
 			}
 
-			const providers = parsed.filter === "both" ? (["codex", "minimax", "deepseek"] as const) : ([parsed.filter] as const);
+			const providers = parsed.filter === "both" ? (["codex", "minimax", "deepseek", "mimo"] as const) : ([parsed.filter] as const);
 			const quotas = await Promise.all(providers.map((provider) => fetchQuota(pi, provider)));
 			await showQuotaCard(ctx, quotas);
 		},
