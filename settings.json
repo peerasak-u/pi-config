@@ -1,7 +1,7 @@
 {
   "lastChangelogVersion": "0.78.0",
-  "defaultProvider": "xiaomi",
-  "defaultModel": "mimo-v2-pro",
+  "defaultProvider": "minimax",
+  "defaultModel": "MiniMax-M3",
   "packages": [
     "git:github.com/aliou/pi-guardrails",
     "npm:pi-context",
@@ -11,7 +11,16 @@
     "npm:pi-subagents",
     "npm:pi-rtk"
   ],
-  "defaultThinkingLevel": "high",
+  "enabledModels": [
+    "xiaomi/mimo-v2.5",
+    "xiaomi/mimo-v2.5-pro",
+    "minimax/MiniMax-M3",
+    "openai-codex/gpt-5.5",
+    "openai-codex/gpt-5.4-mini",
+    "deepseek/deepseek-v4-flash",
+    "deepseek/deepseek-v4-pro"
+  ],
+  "defaultThinkingLevel": "minimal",
   "steeringMode": "all",
   "inputInjectEnabled": false,
   "lsp": {
