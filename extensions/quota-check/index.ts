@@ -5,52 +5,22 @@
  * colorful TUI card instead of raw command-line output.
  */
 
-import os from "node:os";
-import path from "node:path";
 import type { ExtensionAPI, ExtensionCommandContext } from "@earendil-works/pi-coding-agent";
 import { truncateToWidth, visibleWidth, wrapTextWithAnsi } from "@earendil-works/pi-tui";
+import {
+	SCRIPT_PATH,
+	PROVIDERS,
+	clampPercent,
+	fetchQuota,
+	type ProviderId,
+	type QuotaInfo,
+	type QuotaWindow,
+} from "./api.ts";
 
-const SCRIPT_PATH = path.join(os.homedir(), ".tony-cli", "tools", "quota-check", "quota-check.sh");
-
-const PROVIDERS = ["codex", "grok"] as const;
-type ProviderId = (typeof PROVIDERS)[number];
 type ProviderFilter = "all" | "both" | ProviderId | "help";
 type ParsedArgs = { providers: ProviderId[] } | { filter: "help" } | { error: string };
 
-const PROVIDER_LABELS: Record<ProviderId, string> = {
-	codex: "Codex / ChatGPT",
-	grok: "Grok",
-};
-
-type QuotaWindow = {
-	name: string;
-	used_percent: number;
-	reset_at: number;
-	remains_ms?: number;
-};
-
-type QuotaBalance = {
-	total: number;
-	currency: string;
-	available?: boolean;
-	granted?: number;
-	topped_up?: number;
-};
-
-type QuotaInfo = {
-	provider: ProviderId;
-	label: string;
-	detail: string;
-	windows: QuotaWindow[];
-	balance?: QuotaBalance;
-	error?: string;
-};
-
 // ---- Argument parsing ----
-
-function isProviderId(value: string): value is ProviderId {
-	return (PROVIDERS as readonly string[]).includes(value);
-}
 
 function parseQuotaArgs(rawArgs: string): ParsedArgs {
 	const trimmed = rawArgs.trim();
@@ -63,27 +33,6 @@ function parseQuotaArgs(rawArgs: string): ParsedArgs {
 		error:
 			`Unknown quota-check argument: ${trimmed}\n\n` +
 			"Usage: /quota-check [all|both|codex|grok|help]",
-	};
-}
-
-// ---- JSON parsing ----
-
-function parseQuotaJson(stdout: string, fallbackProvider: ProviderId): QuotaInfo {
-	const arr = JSON.parse(stdout) as any[];
-	const data = Array.isArray(arr) ? arr.find((e) => e.provider === fallbackProvider) ?? arr[0] : arr;
-	if (!data) throw new Error("empty response");
-	const provider: ProviderId = isProviderId(data.provider) ? data.provider : fallbackProvider;
-	const windows: QuotaWindow[] = (data.windows ?? []).map((w: any) => ({
-		name: String(w.name ?? ""),
-		used_percent: Number(w.used_percent ?? 0),
-		reset_at: Number(w.reset_at ?? 0),
-		remains_ms: w.remains_ms != null ? Number(w.remains_ms) : undefined,
-	}));
-	return {
-		provider,
-		label: String(data.label ?? PROVIDER_LABELS[provider]),
-		detail: String(data.plan_type ?? "unknown"),
-		windows,
 	};
 }
 
@@ -108,36 +57,6 @@ function formatResetTime(ts: number): string {
 		return `tomorrow ${new Date(epoch * 1000).toLocaleTimeString([], { hour: "numeric" }).toLowerCase()}`;
 	}
 	return `in ${Math.floor(diffSec / 86400)}d`;
-}
-
-function clampPercent(value: number): number {
-	if (!Number.isFinite(value)) return 0;
-	return Math.max(0, Math.min(100, Math.round(value)));
-}
-
-// ---- Quota fetching ----
-
-async function fetchQuota(pi: ExtensionAPI, provider: ProviderId): Promise<QuotaInfo> {
-	const result = await pi.exec(SCRIPT_PATH, [`--${provider}`, "--json"], { timeout: 20_000 });
-	if (typeof result.code === "number" && result.code !== 0) {
-		const message = [result.stdout?.trim(), result.stderr?.trim()].filter(Boolean).join("\n") || `${provider} quota check failed`;
-		return quotaError(provider, message);
-	}
-	try {
-		return parseQuotaJson(result.stdout ?? "", provider);
-	} catch (error: any) {
-		return quotaError(provider, `Could not parse ${provider} quota JSON: ${error?.message ?? String(error)}`);
-	}
-}
-
-function quotaError(provider: ProviderId, error: string): QuotaInfo {
-	return {
-		provider,
-		label: PROVIDER_LABELS[provider],
-		detail: "unavailable",
-		windows: [],
-		error,
-	};
 }
 
 // ---- UI helpers ----

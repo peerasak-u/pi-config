@@ -2,7 +2,10 @@
  * Minimal Footer Extension
  *
  * Replaces the built-in footer with a minimal single-line display:
- *   project · main · gpt-5.5/high          ▓▓▒░░░░░░░░░ 16%/200k
+ *   project · main · gpt-5.5/high [5h: 1%]       ▓▓▒░░░░░░░░░ 16%/200k
+ *
+ * For openai-codex / xai-auth models, appends quota usage from quota-check.sh
+ * (5h window % and credit % respectively).
  *
  * footerData provides git branch and extension statuses.
  * Token/context stats come from ctx.sessionManager and ctx.getContextUsage().
@@ -11,9 +14,61 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import type { TUI } from "@earendil-works/pi-tui";
 import { truncateToWidth, visibleWidth } from "@earendil-works/pi-tui";
+import {
+	fetchQuota,
+	footerQuotaBadge,
+	formatFooterQuotaSuffix,
+	quotaProviderForModelProvider,
+	type FooterQuotaBadge,
+	type ProviderId,
+} from "./quota-check/api.ts";
 
 const BAR_WIDTH = 12;
 const BRANCH_WIDTH = 32;
+const QUOTA_REFRESH_MS = 60_000;
+
+type QuotaCacheEntry = {
+	badge: FooterQuotaBadge;
+	fetchedAt: number;
+};
+
+const quotaCache = new Map<ProviderId, QuotaCacheEntry>();
+let quotaRefreshTimer: ReturnType<typeof setInterval> | undefined;
+let quotaFetchInFlight = new Set<ProviderId>();
+
+async function refreshQuotaForProvider(pi: ExtensionAPI, provider: ProviderId, onDone: () => void) {
+	if (quotaFetchInFlight.has(provider)) return;
+	quotaFetchInFlight.add(provider);
+	try {
+		const quota = await fetchQuota(pi, provider);
+		const modelProvider = provider === "codex" ? "openai-codex" : "xai-auth";
+		quotaCache.set(provider, {
+			badge: footerQuotaBadge(quota, modelProvider),
+			fetchedAt: Date.now(),
+		});
+	} finally {
+		quotaFetchInFlight.delete(provider);
+		onDone();
+	}
+}
+
+function scheduleQuotaRefresh(pi: ExtensionAPI, modelProvider: string | undefined, requestRender: () => void) {
+	const quotaProvider = quotaProviderForModelProvider(modelProvider);
+	if (!quotaProvider) return;
+
+	const cached = quotaCache.get(quotaProvider);
+	const stale = !cached || Date.now() - cached.fetchedAt > QUOTA_REFRESH_MS;
+	if (!stale) return;
+
+	void refreshQuotaForProvider(pi, quotaProvider, requestRender);
+}
+
+function quotaSuffixForModel(modelProvider: string | undefined): string {
+	const quotaProvider = quotaProviderForModelProvider(modelProvider);
+	if (!quotaProvider) return "";
+	const cached = quotaCache.get(quotaProvider);
+	return formatFooterQuotaSuffix(cached?.badge ?? null);
+}
 
 export default function (pi: ExtensionAPI) {
 	let activeTui: TUI | undefined;
@@ -22,16 +77,42 @@ export default function (pi: ExtensionAPI) {
 	pi.on("model_select", requestRender);
 	pi.on("thinking_level_select", requestRender);
 	pi.on("session_shutdown", () => {
+		if (quotaRefreshTimer) {
+			clearInterval(quotaRefreshTimer);
+			quotaRefreshTimer = undefined;
+		}
 		activeTui = undefined;
 	});
 
-	// Apply minimal footer on load
 	pi.on("session_start", async (_event, ctx) => {
 		ctx.ui.setFooter((tui, theme, footerData) => {
 			activeTui = tui;
 			const unsub = footerData.onBranchChange(() => tui.requestRender());
 
 			let percent = 0;
+			let lastQuotaProvider: ProviderId | null = null;
+
+			const ensureQuotaPolling = (modelProvider: string | undefined) => {
+				const qp = quotaProviderForModelProvider(modelProvider);
+				if (!qp) {
+					lastQuotaProvider = null;
+					return;
+				}
+				if (qp !== lastQuotaProvider) {
+					lastQuotaProvider = qp;
+					void refreshQuotaForProvider(pi, qp, () => tui.requestRender());
+				} else {
+					scheduleQuotaRefresh(pi, modelProvider, () => tui.requestRender());
+				}
+			};
+
+			if (!quotaRefreshTimer) {
+				quotaRefreshTimer = setInterval(() => {
+					const provider = ctx.model?.provider;
+					const qp = quotaProviderForModelProvider(provider);
+					if (qp) void refreshQuotaForProvider(pi, qp, () => tui.requestRender());
+				}, QUOTA_REFRESH_MS);
+			}
 
 			return {
 				dispose() {
@@ -40,18 +121,18 @@ export default function (pi: ExtensionAPI) {
 				},
 				invalidate() {},
 				render(width: number): string[] {
-					// Current folder name
 					const cwd = ctx.cwd;
 					const folder = truncateToWidth(cwd.split("/").pop() ?? cwd, 20);
 
-					// Git branch (or dash if not in git)
 					const branch = truncateToWidth(footerData.getGitBranch() ?? "—", BRANCH_WIDTH);
 
-					// Model + thinking level, e.g. gpt-5.5/high
-					const model = truncateToWidth(ctx.model?.id ?? "no-model", 24);
-					const modelThinking = truncateToWidth(`${model}/${pi.getThinkingLevel()}`, 32);
+					const modelProvider = ctx.model?.provider;
+					ensureQuotaPolling(modelProvider);
 
-					// Context usage percentage
+					const model = truncateToWidth(ctx.model?.id ?? "no-model", 24);
+					const quotaSuffix = quotaSuffixForModel(modelProvider);
+					const modelThinking = truncateToWidth(`${model}/${pi.getThinkingLevel()}${quotaSuffix}`, 40);
+
 					const usage = ctx.getContextUsage();
 					percent =
 						usage?.tokens != null && usage.tokens > 0 && usage?.contextWindow != null
@@ -59,12 +140,10 @@ export default function (pi: ExtensionAPI) {
 							: 0;
 					const contextWindow = usage?.contextWindow ?? 0;
 
-					// Progress bar (▓ filled, ▒ partial, ░ empty) + percentage
 					const filled = Math.round((percent / 100) * BAR_WIDTH);
 					const empty = BAR_WIDTH - filled;
 					const progress = genBar(filled, empty, percent) + " " + percent + "%/" + formatTokens(contextWindow);
 
-					// Keep metadata on the left and snap progress to the right.
 					const sep = " · ";
 					const left = [folder, branch, modelThinking].join(sep);
 					const progressWidth = visibleWidth(progress);
