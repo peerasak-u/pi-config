@@ -1,7 +1,7 @@
 /**
  * quota-check — Pi command for Tony CLI quota status.
  *
- * Registers /quota-check and displays Codex/MiniMax quota as a compact,
+ * Registers /quota-check and displays Codex/Grok quota as a compact,
  * colorful TUI card instead of raw command-line output.
  */
 
@@ -12,8 +12,15 @@ import { truncateToWidth, visibleWidth, wrapTextWithAnsi } from "@earendil-works
 
 const SCRIPT_PATH = path.join(os.homedir(), ".tony-cli", "tools", "quota-check", "quota-check.sh");
 
-type ProviderFilter = "both" | "codex" | "minimax" | "help";
-type ParsedArgs = { filter: ProviderFilter } | { error: string };
+const PROVIDERS = ["codex", "grok"] as const;
+type ProviderId = (typeof PROVIDERS)[number];
+type ProviderFilter = "all" | "both" | ProviderId | "help";
+type ParsedArgs = { providers: ProviderId[] } | { filter: "help" } | { error: string };
+
+const PROVIDER_LABELS: Record<ProviderId, string> = {
+	codex: "Codex / ChatGPT",
+	grok: "Grok",
+};
 
 type QuotaWindow = {
 	name: string;
@@ -31,7 +38,7 @@ type QuotaBalance = {
 };
 
 type QuotaInfo = {
-	provider: "codex" | "minimax";
+	provider: ProviderId;
 	label: string;
 	detail: string;
 	windows: QuotaWindow[];
@@ -41,28 +48,31 @@ type QuotaInfo = {
 
 // ---- Argument parsing ----
 
+function isProviderId(value: string): value is ProviderId {
+	return (PROVIDERS as readonly string[]).includes(value);
+}
+
 function parseQuotaArgs(rawArgs: string): ParsedArgs {
 	const trimmed = rawArgs.trim();
-	if (!trimmed || trimmed === "both" || trimmed === "all") return { filter: "both" };
-	if (trimmed === "codex" || trimmed === "--codex") return { filter: "codex" };
-	if (trimmed === "minimax" || trimmed === "--minimax") return { filter: "minimax" };
+	if (!trimmed || trimmed === "all" || trimmed === "both") return { providers: [...PROVIDERS] };
+	if (trimmed === "codex" || trimmed === "--codex") return { providers: ["codex"] };
+	if (trimmed === "grok" || trimmed === "--grok") return { providers: ["grok"] };
 	if (trimmed === "help" || trimmed === "-h" || trimmed === "--help") return { filter: "help" };
 
 	return {
 		error:
 			`Unknown quota-check argument: ${trimmed}\n\n` +
-			"Usage: /quota-check [both|codex|minimax|help]",
+			"Usage: /quota-check [all|both|codex|grok|help]",
 	};
 }
 
 // ---- JSON parsing ----
 
-function parseQuotaJson(stdout: string, fallbackProvider: "codex" | "minimax"): QuotaInfo {
+function parseQuotaJson(stdout: string, fallbackProvider: ProviderId): QuotaInfo {
 	const arr = JSON.parse(stdout) as any[];
 	const data = Array.isArray(arr) ? arr.find((e) => e.provider === fallbackProvider) ?? arr[0] : arr;
 	if (!data) throw new Error("empty response");
-	const provider: "codex" | "minimax" =
-		data.provider === "codex" || data.provider === "minimax" ? data.provider : fallbackProvider;
+	const provider: ProviderId = isProviderId(data.provider) ? data.provider : fallbackProvider;
 	const windows: QuotaWindow[] = (data.windows ?? []).map((w: any) => ({
 		name: String(w.name ?? ""),
 		used_percent: Number(w.used_percent ?? 0),
@@ -71,7 +81,7 @@ function parseQuotaJson(stdout: string, fallbackProvider: "codex" | "minimax"): 
 	}));
 	return {
 		provider,
-		label: String(data.label ?? (provider === "codex" ? "Codex / ChatGPT" : "MiniMax")),
+		label: String(data.label ?? PROVIDER_LABELS[provider]),
 		detail: String(data.plan_type ?? "unknown"),
 		windows,
 	};
@@ -107,7 +117,7 @@ function clampPercent(value: number): number {
 
 // ---- Quota fetching ----
 
-async function fetchQuota(pi: ExtensionAPI, provider: "codex" | "minimax"): Promise<QuotaInfo> {
+async function fetchQuota(pi: ExtensionAPI, provider: ProviderId): Promise<QuotaInfo> {
 	const result = await pi.exec(SCRIPT_PATH, [`--${provider}`, "--json"], { timeout: 20_000 });
 	if (typeof result.code === "number" && result.code !== 0) {
 		const message = [result.stdout?.trim(), result.stderr?.trim()].filter(Boolean).join("\n") || `${provider} quota check failed`;
@@ -120,10 +130,10 @@ async function fetchQuota(pi: ExtensionAPI, provider: "codex" | "minimax"): Prom
 	}
 }
 
-function quotaError(provider: "codex" | "minimax", error: string): QuotaInfo {
+function quotaError(provider: ProviderId, error: string): QuotaInfo {
 	return {
 		provider,
-		label: provider === "codex" ? "Codex / ChatGPT" : "MiniMax",
+		label: PROVIDER_LABELS[provider],
 		detail: "unavailable",
 		windows: [],
 		error,
@@ -266,13 +276,14 @@ function frameLine(borderColor: (s: string) => string, line: string, innerWidth:
 
 export default function quotaCheckExtension(pi: ExtensionAPI) {
 	pi.registerCommand("quota-check", {
-		description: "Check Codex/MiniMax API quota status",
+		description: "Check Codex/Grok API quota status",
 
 		getArgumentCompletions(prefix) {
 			const items = [
-				{ value: "both", label: "both", description: "Show Codex and MiniMax quota" },
+				{ value: "all", label: "all", description: "Show Codex and Grok quota" },
+				{ value: "both", label: "both", description: "Show Codex and Grok quota" },
 				{ value: "codex", label: "codex", description: "Show Codex/ChatGPT quota only" },
-				{ value: "minimax", label: "minimax", description: "Show MiniMax quota only" },
+				{ value: "grok", label: "grok", description: "Show Grok quota only" },
 				{ value: "help", label: "help", description: "Show quota-check CLI help" },
 			];
 			const filtered = items.filter((item) => item.value.startsWith(prefix));
@@ -287,15 +298,14 @@ export default function quotaCheckExtension(pi: ExtensionAPI) {
 				return;
 			}
 
-			if (parsed.filter === "help") {
+			if ("filter" in parsed && parsed.filter === "help") {
 				const result = await pi.exec(SCRIPT_PATH, ["--help"], { timeout: 10_000 });
 				const output = buildHelpOutput(result.stdout ?? "", result.stderr ?? "", result.code);
 				await showTextDialog(ctx, "quota-check — help", output.text, output.isError);
 				return;
 			}
 
-			const providers = parsed.filter === "both" ? (["codex", "minimax"] as const) : ([parsed.filter] as const);
-			const quotas = await Promise.all(providers.map((provider) => fetchQuota(pi, provider)));
+			const quotas = await Promise.all(parsed.providers.map((provider) => fetchQuota(pi, provider)));
 
 			await showQuotaCard(ctx, quotas);
 		},
