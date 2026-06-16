@@ -129,7 +129,13 @@ async function showTextDialog(ctx: ExtensionCommandContext, title: string, body:
 			},
 			render(width: number): string[] {
 				const innerWidth = Math.min(58, Math.max(38, width - 6));
-				const top = borderColor(`╭─ ${titleColor(title)} ${"─".repeat(Math.max(0, innerWidth - visibleWidth(title) - 3))}╮`);
+				const titleDashes = Math.max(0, innerWidth - visibleWidth(title) - 3);
+				const top =
+					borderColor("╭─ ") +
+					titleColor(title) +
+					" " +
+					borderColor("─".repeat(titleDashes)) +
+					borderColor("╮");
 				const bottom = borderColor(`╰${"─".repeat(innerWidth)}╯`);
 				const lines = [top];
 				for (const rawLine of content.flatMap((line) => wrapTextWithAnsi(line || " ", innerWidth - 2))) {
@@ -161,7 +167,13 @@ async function showQuotaCard(ctx: ExtensionCommandContext, quotas: QuotaInfo[]):
 			},
 			render(width: number): string[] {
 				const title = theme.fg("accent", theme.bold("Quota Check"));
-				const top = borderColor(`╭─ ${title} ${"─".repeat(cardWidth - visibleWidth("Quota Check") - 3)}╮`);
+				const titleDashes = Math.max(0, cardWidth - visibleWidth("Quota Check") - 3);
+				const top =
+					borderColor("╭─ ") +
+					title +
+					" " +
+					borderColor("─".repeat(titleDashes)) +
+					borderColor("╮");
 				const bottom = borderColor(`╰${"─".repeat(cardWidth)}╯`);
 				const lines = [top, frameLine(borderColor, "", cardWidth)];
 
